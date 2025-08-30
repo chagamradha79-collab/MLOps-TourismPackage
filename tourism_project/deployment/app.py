@@ -74,11 +74,11 @@ new_customer_df = st.dataframe(input_data)
 
 
 # Load saved best RandomForest model (example)
-loaded_model = joblib.load("best_model_XGBoost.joblib")
+#loaded_model = joblib.load("best_model_XGBoost.joblib")
 
 
-prediction = loaded_model.predict(new_customer_df)
-pred_prob = loaded_model.predict_proba(new_customer_df)[:, 1]
+prediction = model.predict(new_customer_df)
+pred_prob = model.predict_proba(new_customer_df)[:, 1]
 
 
 print("\nPrediction for new customer:", "Will Buy" if prediction[0] == 1 else "Will Not Buy")
