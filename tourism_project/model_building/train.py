@@ -17,6 +17,7 @@ import os
 from huggingface_hub import login, HfApi, create_repo
 from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 from huggingface_hub import hf_hub_download
+from huggingface_hub import HfFolder
 import mlflow
 from sklearn.compose import make_column_transformer
 
@@ -136,10 +137,14 @@ with mlflow.start_run(run_name=model_name):
         create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
         print(f"Space '{repo_id}' created.")
 
+    hf_token = HfFolder.get_token()
+
     # create_repo("churn-model", repo_type="model", private=False)
     api.upload_file(
-               path_or_fileobj="best_TourismPackage_Purchase_model_v1.joblib",
+               path_or_fileobj="tourism_project/model_building/TourismPackage_Purchase_model_v1.joblib",
                path_in_repo="best_TourismPackage_Purchase_model_v1.joblib",
                repo_id=repo_id,
                repo_type=repo_type,
+               token=hf_token
                )
+    print(f"Model uploaded to https://huggingface.co/{repo_id}")
