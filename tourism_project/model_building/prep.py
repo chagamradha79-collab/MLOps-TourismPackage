@@ -23,7 +23,7 @@ df.drop_duplicates(inplace=True)
 
 for col in df.columns:
     if df[col].dtype == 'object':
-        df[col].fillna(data[col].mode()[0], inplace=True)
+        df[col].fillna(df[col].mode()[0], inplace=True)
     else:
         df[col].fillna(df[col].median(), inplace=True)
 
