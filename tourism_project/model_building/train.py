@@ -63,25 +63,18 @@ xgb_model = xgb.XGBClassifier(eval_metric='logloss', use_label_encoder=False, ra
 
 # ----- 7. Hyperparameter Grids -----
 param_grid = {
-'XGBoost__n_estimators': [100, 200],
-'XGBoost__max_depth': [3, 6, 10],
-'XGBoost__learning_rate': [0.01, 0.1, 0.2]
+'model__n_estimators': [100, 200],
+'model__max_depth': [3, 6, 10],
+'model__learning_rate': [0.01, 0.1, 0.2]
 }
 
-# Model pipeline
-pipe = make_pipeline(preprocessor, xgb_model)
 
 model_name = "XGBoost"
 
 #----- 8. Training, Hyperparameter Tuning & MLflow Tracking -----
 with mlflow.start_run(run_name=model_name):
     print(f"\nTraining {model_name}...")
-    #pipe = Pipeline(steps=[('preprocessor', preprocessor), ('clf', model)])
-    #pipe = pipeline( preprocessor,  xgb_model)
-    #pipe= Pipeline(steps=[
-    #               ("preprocessor", preprocessor),
-    #               ("model", xgb_model)
-    #               ])
+    pipe = Pipeline(steps=["preprocessor", preprocessor), ("model", xgb_model)])
 
     grid_search = GridSearchCV(pipe, param_grid, cv=3, scoring='roc_auc', n_jobs=-1)
     grid_search.fit(X_train, y_train)
