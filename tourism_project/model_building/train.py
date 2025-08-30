@@ -46,7 +46,7 @@ param_grid = {
 'XGBoost__learning_rate': [0.01, 0.1, 0.2]
 }
 
- ----- 8. Training, Hyperparameter Tuning & MLflow Tracking -----
+#----- 8. Training, Hyperparameter Tuning & MLflow Tracking -----
 with mlflow.start_run(run_name=model_name):
     print(f"\nTraining {model_name}...")
     #pipe = Pipeline(steps=[('preprocessor', preprocessor), ('clf', model)])
