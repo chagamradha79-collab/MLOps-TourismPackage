@@ -59,9 +59,13 @@ Xtrain, Xtest, ytrain, ytest = train_test_split(
 Xtrain.to_csv("Xtrain.csv",index=False)
 Xtest.to_csv("Xtest.csv",index=False)
 ytrain.to_csv("ytrain.csv",index=False)
-ytest.to_csv("ytest.csv",index=False)
+ytest.to_csv("ytest.csv",index=False)# Save artifacts
 
-files = ["Xtrain.csv","Xtest.csv","ytrain.csv","ytest.csv"]
+joblib.dump(preprocessor,"preprocessor.joblib")
+
+
+
+files = ["Xtrain.csv","Xtest.csv","ytrain.csv","ytest.csv","preprocessor.joblib"]
 
 for file_path in files:
     api.upload_file(
@@ -71,11 +75,11 @@ for file_path in files:
         repo_type="dataset",
     )
 # Save artifacts
-joblib.dump(preprocessor,"preprocessor.joblib")
+#joblib.dump(preprocessor,"preprocessor.joblib")
 
-api.upload_file(
-        path_or_fileobj="preprocessor.joblib",
-        path_in_repo="preprocessor.joblib",  # just the filename
-        repo_id="CRR79/TourismPackage-Purchase-Prediction",
-        repo_type="model",
+#api.upload_file(
+#        path_or_fileobj="preprocessor.joblib",
+#        path_in_repo="preprocessor.joblib",  # just the filename
+#        repo_id="CRR79/TourismPackage-Purchase-Prediction",
+#        repo_type="model",
 )
