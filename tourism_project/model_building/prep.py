@@ -61,17 +61,6 @@ Xtest.to_csv("Xtest.csv",index=False)
 ytrain.to_csv("ytrain.csv",index=False)
 ytest.to_csv("ytest.csv",index=False)
 
-# Save artifacts
-joblib.dump(preprocessor,"preprocessor.joblib")
-
-api.upload_file(
-        path_or_fileobj="preprocessor.joblib",
-        path_in_repo="preprocessor.joblib",  # just the filename
-        repo_id="CRR79/TourismPackage-Purchase-Prediction",
-        repo_type="model",
-    )
-
-
 files = ["Xtrain.csv","Xtest.csv","ytrain.csv","ytest.csv"]
 
 for file_path in files:
@@ -81,3 +70,12 @@ for file_path in files:
         repo_id="CRR79/TourismPackage-Purchase-Prediction",
         repo_type="dataset",
     )
+# Save artifacts
+joblib.dump(preprocessor,"preprocessor.joblib")
+
+api.upload_file(
+        path_or_fileobj="preprocessor.joblib",
+        path_in_repo="preprocessor.joblib",  # just the filename
+        repo_id="CRR79/TourismPackage-Purchase-Prediction",
+        repo_type="model",
+)
