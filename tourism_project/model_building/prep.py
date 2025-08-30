@@ -11,6 +11,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from huggingface_hub import login, HfApi
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
+import joblib
 
 # Define constants for the dataset and output paths
 api = HfApi(token=os.getenv("HF_TOKEN_TOURISM"))
@@ -59,6 +60,16 @@ Xtrain.to_csv("Xtrain.csv",index=False)
 Xtest.to_csv("Xtest.csv",index=False)
 ytrain.to_csv("ytrain.csv",index=False)
 ytest.to_csv("ytest.csv",index=False)
+
+# Save artifacts
+joblib.dump(preprocessor,"preprocessor.joblib")
+
+api.upload_file(
+        path_or_fileobj="preprocessor.joblib",
+        path_in_repo="preprocessor.joblib",  # just the filename
+        repo_id="CRR79/TourismPackage-Purchase-Prediction",
+        repo_type="model",
+    )
 
 
 files = ["Xtrain.csv","Xtest.csv","ytrain.csv","ytest.csv"]
