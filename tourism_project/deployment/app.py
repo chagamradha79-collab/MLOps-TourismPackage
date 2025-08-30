@@ -5,7 +5,10 @@ import joblib
 
 # Download and load the model
 model_path = hf_hub_download(repo_id= "CRR79/TourismPackage-Purchase-Prediction", filename="TourismPackage_Purchase_model_v1.joblib")
+print("Model path:", model_path)
+
 model = joblib.load(model_path)
+
 
 # Streamlit UI for Machine Failure Prediction
 st.title("Tourism Package Purchase Prediction App")
