@@ -48,76 +48,76 @@ param_grid = {
 
  ----- 8. Training, Hyperparameter Tuning & MLflow Tracking -----
 with mlflow.start_run(run_name=model_name):
-          print(f"\nTraining {model_name}...")
-          #pipe = Pipeline(steps=[('preprocessor', preprocessor), ('clf', model)])
-          #pipe = pipeline( preprocessor,  xgb_model)
-          pipe= Pipeline(steps=[
-                        ("preprocessor", preprocessor),
-                        ("model", xgb_model)
-                        ])
+    print(f"\nTraining {model_name}...")
+    #pipe = Pipeline(steps=[('preprocessor', preprocessor), ('clf', model)])
+    #pipe = pipeline( preprocessor,  xgb_model)
+    pipe= Pipeline(steps=[
+                   ("preprocessor", preprocessor),
+                   ("model", xgb_model)
+                   ])
 
-          grid_search = GridSearchCV(pipe, param_grid, cv=3, scoring='roc_auc', n_jobs=-1)
-          grid_search.fit(X_train, y_train)
+    grid_search = GridSearchCV(pipe, param_grid, cv=3, scoring='roc_auc', n_jobs=-1)
+    grid_search.fit(X_train, y_train)
 
-          # Log all parameter combinations and their mean test scores
-          results = grid_search.cv_results_
-          for i in range(len(results['params'])):
-             param_set = results['params'][i]
-             mean_score = results['mean_test_score'][i]
-             std_score = results['std_test_score'][i]
+    # Log all parameter combinations and their mean test scores
+    results = grid_search.cv_results_
+    for i in range(len(results['params'])):
+        param_set = results['params'][i]
+        mean_score = results['mean_test_score'][i]
+        std_score = results['std_test_score'][i]
 
-             # Log each combination as a separate MLflow run
-             with mlflow.start_run(nested=True):
-                  mlflow.log_params(param_set)
-                  mlflow.log_metric("mean_test_score", mean_score)
-                  mlflow.log_metric("std_test_score", std_score)
+    # Log each combination as a separate MLflow run
+    with mlflow.start_run(nested=True):
+        mlflow.log_params(param_set)
+        mlflow.log_metric("mean_test_score", mean_score)
+        mlflow.log_metric("std_test_score", std_score)
 
-          # Log best parameters separately in main run
-          mlflow.log_params(grid_search.best_params_)
+    # Log best parameters separately in main run
+    mlflow.log_params(grid_search.best_params_)
 
-          best_model = grid_search.best_estimator_
-          y_pred = best_model.predict(X_test)
-          y_proba = best_model.predict_proba(X_test)[:, 1]
+    best_model = grid_search.best_estimator_
+    y_pred = best_model.predict(X_test)
+    y_proba = best_model.predict_proba(X_test)[:, 1]
 
-          acc = accuracy_score(y_test, y_pred)
-          roc_auc = roc_auc_score(y_test, y_proba)
+    acc = accuracy_score(y_test, y_pred)
+    roc_auc = roc_auc_score(y_test, y_proba)
 
-          print(f"Best Params: {grid_search.best_params_}")
-          print("Accuracy:", acc)
-          print("ROC-AUC:", roc_auc)
-          print("Classification Report:\n", classification_report(y_test, y_pred))
+    print(f"Best Params: {grid_search.best_params_}")
+    print("Accuracy:", acc)
+    print("ROC-AUC:", roc_auc)
+    print("Classification Report:\n", classification_report(y_test, y_pred))
 
-          # Log metrics & params to MLflow
-          mlflow.log_params(grid_search.best_params_)
-          mlflow.log_metric("accuracy", acc)
-          mlflow.log_metric("roc_auc", roc_auc)
+    # Log metrics & params to MLflow
+    mlflow.log_params(grid_search.best_params_)
+    mlflow.log_metric("accuracy", acc)
+    mlflow.log_metric("roc_auc", roc_auc)
 
 
-          # Save the model locally
-          model_path = "best_TourismPackage_Purchase_model_v1.joblib"
-          joblib.dump(best_model, model_path)
+    # Save the model locally
+    model_path = "best_TourismPackage_Purchase_model_v1.joblib"
+    joblib.dump(best_model, model_path)
 
-          # Log the model artifact
-          mlflow.log_artifact(model_path, artifact_path="model")
-          print(f"Model saved as artifact at: {model_path}")
+    # Log the model artifact
+    mlflow.log_artifact(model_path, artifact_path="model")
+    print(f"Model saved as artifact at: {model_path}")
 
-          # Upload to Hugging Face
-         repo_id = "CRR79/TourismPackage-Purchase-Prediction"
-         repo_type = "model"
+    # Upload to Hugging Face
+    repo_id = "CRR79/TourismPackage-Purchase-Prediction"
+    repo_type = "model"
 
-         # Step 1: Check if the space exists
-         try:
-            api.repo_info(repo_id=repo_id, repo_type=repo_type)
-            print(f"Space '{repo_id}' already exists. Using it.")
-         except RepositoryNotFoundError:
-            print(f"Space '{repo_id}' not found. Creating new space...")
-            create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
-            print(f"Space '{repo_id}' created.")
+    # Step 1: Check if the space exists
+    try:
+        api.repo_info(repo_id=repo_id, repo_type=repo_type)
+        print(f"Space '{repo_id}' already exists. Using it.")
+    except RepositoryNotFoundError:
+        print(f"Space '{repo_id}' not found. Creating new space...")
+        create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
+        print(f"Space '{repo_id}' created.")
 
-         # create_repo("churn-model", repo_type="model", private=False)
-         api.upload_file(
+    # create_repo("churn-model", repo_type="model", private=False)
+    api.upload_file(
                path_or_fileobj="best_TourismPackage_Purchase_model_v1.joblib",
                path_in_repo="best_TourismPackage_Purchase_model_v1.joblib",
                repo_id=repo_id,
                repo_type=repo_type,
-         )
+               )
