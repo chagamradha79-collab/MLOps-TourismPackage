@@ -45,12 +45,6 @@ le = LabelEncoder()
 for col in cat_cols:
     X[col] = le.fit_transform(X[col])
 
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', StandardScaler(), num_cols)
-    ], remainder='passthrough')
-
-
 # ----- 5. Train-Test Split -----
 Xtrain, Xtest, ytrain, ytest = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
@@ -61,11 +55,7 @@ Xtest.to_csv("Xtest.csv",index=False)
 ytrain.to_csv("ytrain.csv",index=False)
 ytest.to_csv("ytest.csv",index=False)# Save artifacts
 
-joblib.dump(preprocessor,"preprocessor.joblib")
-
-
-
-files = ["Xtrain.csv","Xtest.csv","ytrain.csv","ytest.csv","preprocessor.joblib"]
+files = ["Xtrain.csv","Xtest.csv","ytrain.csv","ytest.csv"]
 
 for file_path in files:
     api.upload_file(
@@ -74,12 +64,4 @@ for file_path in files:
         repo_id="CRR79/TourismPackage-Purchase-Prediction",
         repo_type="dataset",
     )
-# Save artifacts
-#joblib.dump(preprocessor,"preprocessor.joblib")
 
-#api.upload_file(
-#        path_or_fileobj="preprocessor.joblib",
-#        path_in_repo="preprocessor.joblib",  # just the filename
-#        repo_id="CRR79/TourismPackage-Purchase-Prediction",
-#        repo_type="model",
-#)
