@@ -26,13 +26,17 @@ Xtrain_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/Xtrain.csv
 Xtest_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/Xtest.csv"
 ytrain_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/ytrain.csv"
 ytest_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/ytest.csv"
-preprocessor_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/preprocessor.joblib"
+#preprocessor_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/preprocessor.joblib"
+
+# Download and load the preprocessor
+preprocessor_path = hf_hub_download(repo_id= "CRR79/TourismPackage-Purchase-Prediction", filename="preprocessor.joblib")
+preprocessor = joblib.load(preprocessor_path)
 
 X_train = pd.read_csv(Xtrain_path)
 X_test = pd.read_csv(Xtest_path)
 y_train = pd.read_csv(ytrain_path)
 y_test = pd.read_csv(ytest_path)
-preprocessor=load(preprocessor_path)
+#preprocessor=load(preprocessor_path)
 
 # ----- 6. Define Models -----
 xgb_model = xgb.XGBClassifier(eval_metric='logloss', use_label_encoder=False, random_state=42)
