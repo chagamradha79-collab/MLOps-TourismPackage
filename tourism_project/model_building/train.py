@@ -74,7 +74,7 @@ model_name = "XGBoost"
 #----- 8. Training, Hyperparameter Tuning & MLflow Tracking -----
 with mlflow.start_run(run_name=model_name):
     print(f"\nTraining {model_name}...")
-    pipe = Pipeline(steps=["preprocessor", preprocessor), ("model", xgb_model)])
+    pipe = Pipeline(steps=[("preprocessor", preprocessor), ("model", xgb_model)])
 
     grid_search = GridSearchCV(pipe, param_grid, cv=3, scoring='roc_auc', n_jobs=-1)
     grid_search.fit(X_train, y_train)
