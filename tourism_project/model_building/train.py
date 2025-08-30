@@ -2,7 +2,7 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import make_pipeline
 # for model training, tuning, and evaluation
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
@@ -16,6 +16,7 @@ from huggingface_hub import login, HfApi, create_repo
 from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 from huggingface_hub import hf_hub_download
 import mlflow
+from sklearn.compose import make_column_transformer
 
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("MLOps-TourismPackage-experiment")
@@ -27,18 +28,34 @@ Xtrain_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/Xtrain.csv
 Xtest_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/Xtest.csv"
 ytrain_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/ytrain.csv"
 ytest_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/ytest.csv"
-#preprocessor_path = "hf://datasets/CRR79/TourismPackage-Purchase-Prediction/preprocessor.joblib"
-
-# Download and load the preprocessor
-preprocessor_path = hf_hub_download(repo_id= "CRR79/TourismPackage-Purchase-Prediction", filename="preprocessor.joblib")
-preprocessor = joblib.load(preprocessor_path)
 
 X_train = pd.read_csv(Xtrain_path)
 X_test = pd.read_csv(Xtest_path)
 y_train = pd.read_csv(ytrain_path)
 y_test = pd.read_csv(ytest_path)
-#preprocessor=load(preprocessor_path)
 
+
+cat_features = [
+"TypeofContact", "Occupation", "Gender", "MaritalStatus",
+"Designation", "ProductPitched"
+]
+numeric_features = [
+"Age", "CityTier", "NumberOfPersonVisiting", "PreferredPropertyStar",
+"NumberOfTrips", "Passport", "OwnCar", "NumberOfChildrenVisiting",
+"MonthlyIncome", "PitchSatisfactionScore", "NumberOfFollowups",
+"DurationOfPitch"
+]
+
+#preprocessor = ColumnTransformer(
+#    transformers=[
+#        ('num', StandardScaler(), num_cols)
+#    ], remainder='passthrough')
+
+# Define the preprocessing steps
+preprocessor = make_column_transformer(
+    (StandardScaler(), numeric_features),
+    (OneHotEncoder(handle_unknown='ignore'), categorical_features)
+)
 # ----- 6. Define Models -----
 xgb_model = xgb.XGBClassifier(eval_metric='logloss', use_label_encoder=False, random_state=42)
 
@@ -51,15 +68,20 @@ param_grid = {
 'XGBoost__learning_rate': [0.01, 0.1, 0.2]
 }
 
+# Model pipeline
+pipe = make_pipeline(preprocessor, xgb_model)
+
+model_name = "XGBoost"
+
 #----- 8. Training, Hyperparameter Tuning & MLflow Tracking -----
 with mlflow.start_run(run_name=model_name):
     print(f"\nTraining {model_name}...")
     #pipe = Pipeline(steps=[('preprocessor', preprocessor), ('clf', model)])
     #pipe = pipeline( preprocessor,  xgb_model)
-    pipe= Pipeline(steps=[
-                   ("preprocessor", preprocessor),
-                   ("model", xgb_model)
-                   ])
+    #pipe= Pipeline(steps=[
+    #               ("preprocessor", preprocessor),
+    #               ("model", xgb_model)
+    #               ])
 
     grid_search = GridSearchCV(pipe, param_grid, cv=3, scoring='roc_auc', n_jobs=-1)
     grid_search.fit(X_train, y_train)
