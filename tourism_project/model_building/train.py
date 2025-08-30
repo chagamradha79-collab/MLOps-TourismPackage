@@ -54,7 +54,7 @@ numeric_features = [
 # Define the preprocessing steps
 preprocessor = make_column_transformer(
     (StandardScaler(), numeric_features),
-    (OneHotEncoder(handle_unknown='ignore'), categorical_features)
+    (OneHotEncoder(handle_unknown='ignore'), cat_features)
 )
 # ----- 6. Define Models -----
 xgb_model = xgb.XGBClassifier(eval_metric='logloss', use_label_encoder=False, random_state=42)
