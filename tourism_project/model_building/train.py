@@ -8,6 +8,7 @@ from sklearn.pipeline import Pipeline
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report, recall_score
+from sklearn.metrics import roc_auc_score
 # for model serialization
 import joblib
 # for creating a folder
