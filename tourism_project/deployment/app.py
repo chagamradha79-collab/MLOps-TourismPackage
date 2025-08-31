@@ -71,7 +71,7 @@ input_data = pd.DataFrame([{
 st.write("### Input DataFrame")
 
 
-new_customer_df = st.dataframe(input_data)
+#new_customer_df = st.dataframe(input_data)
 
 
 
@@ -80,19 +80,19 @@ new_customer_df = st.dataframe(input_data)
 #loaded_model = joblib.load("best_model_XGBoost.joblib")
 
 
-prediction = model.predict(new_customer_df)
-pred_prob = model.predict_proba(new_customer_df)[:, 1]
+#prediction = model.predict(new_customer_df)
+#pred_prob = model.predict_proba(new_customer_df)[:, 1]
 
 
-print("\nPrediction for new customer:", "Will Buy" if prediction[0] == 1 else "Will Not Buy")
-print("Purchase Probability:", pred_prob[0])
+#print("\nPrediction for new customer:", "Will Buy" if prediction[0] == 1 else "Will Not Buy")
+#print("Purchase Probability:", pred_prob[0])
 
 
 
 
 
-if st.button("Predict Failure"):
+if st.button("Predict ProductTaken"):
     prediction = model.predict(input_data)[0]
-    result = "Machine Failure" if prediction == 1 else "No Failure"
+    result = "ProductTaken" if prediction == 1 else "No ProductTaken"
     st.subheader("Prediction Result:")
     st.success(f"The model predicts: **{result}**")
