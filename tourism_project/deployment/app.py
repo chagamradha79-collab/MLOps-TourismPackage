@@ -4,7 +4,7 @@ from huggingface_hub import hf_hub_download
 import joblib
 
 # Download and load the model
-model_path = hf_hub_download(repo_id= "CRR79/TourismPackage-Purchase-Prediction", filename="TourismPackage_Purchase_model_v1.joblib")
+model_path = hf_hub_download(repo_id= "CRR79/TourismPackage-Purchase-Prediction", filename="best_TourismPackage_Purchase_model_v1.joblib")
 print("Model path:", model_path)
 
 model = joblib.load(model_path)
