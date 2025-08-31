@@ -68,31 +68,15 @@ input_data = pd.DataFrame([{
 'IncomePerPerson': income_per_person
 }])
 
+# Print nicely
+print("Input Data:")
+print(input_data)
+
 st.write("### Input DataFrame")
 
-
-#new_customer_df = st.dataframe(input_data)
-
-
-
-
-# Load saved best RandomForest model (example)
-#loaded_model = joblib.load("best_model_XGBoost.joblib")
-
-
-#prediction = model.predict(new_customer_df)
-#pred_prob = model.predict_proba(new_customer_df)[:, 1]
-
-
-#print("\nPrediction for new customer:", "Will Buy" if prediction[0] == 1 else "Will Not Buy")
-#print("Purchase Probability:", pred_prob[0])
-
-
-
-
-
-if st.button("Predict ProductTaken"):
-    prediction = model.predict(input_data)[0]
-    result = "ProductTaken" if prediction == 1 else "No ProductTaken"
+if st.button("Predict Purchage"):
+    prediction = model.predict(input_data)
+    print (" Prediction:",prediction[0])
+    result = "Purchased" if prediction[0] == 1 else "Not Purchased"
     st.subheader("Prediction Result:")
     st.success(f"The model predicts: **{result}**")
