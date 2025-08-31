@@ -21,22 +21,22 @@ from huggingface_hub import HfFolder
 import mlflow
 from sklearn.compose import make_column_transformer
 
-from pyngrok import ngrok
+#from pyngrok import ngrok
 import subprocess
 import mlflow
 
 # Set your auth token here (replace with your actual token)
-ngrok.set_auth_token("31nCxP2CL04UZvgtVWYq2WP7fhU_4anea8o2Hsvuvyzx3px5j")
+#ngrok.set_auth_token("31nCxP2CL04UZvgtVWYq2WP7fhU_4anea8o2Hsvuvyzx3px5j")
 
 # Start MLflow UI on port 5000
-process = subprocess.Popen(["mlflow", "ui", "--port", "5000"])
+process = subprocess.Popen(["mlflow", "ui", "--port", "5001"])
 
 # Create public tunnel
-public_url = ngrok.connect(5000).public_url
-print("MLflow UI is available at:", public_url)
+#public_url = ngrok.connect(5000).public_url
+#print("MLflow UI is available at:", public_url)
 
-#mlflow.set_tracking_uri("http://localhost:5000")
-mlflow.set_tracking_uri(public_url)
+mlflow.set_tracking_uri("http://localhost:5001")
+#mlflow.set_tracking_uri(public_url)
 mlflow.set_experiment("MLOps-TourismPackage-experiment")
 
 api = HfApi()
