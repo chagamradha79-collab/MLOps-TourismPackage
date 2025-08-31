@@ -141,7 +141,7 @@ with mlflow.start_run(run_name=model_name):
 
     # create_repo("churn-model", repo_type="model", private=False)
     api.upload_file(
-               path_or_fileobj="tourism_project/model_building/TourismPackage_Purchase_model_v1.joblib",
+               path_or_fileobj=model_path,
                path_in_repo="best_TourismPackage_Purchase_model_v1.joblib",
                repo_id=repo_id,
                repo_type=repo_type,
